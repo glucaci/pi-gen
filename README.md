@@ -37,6 +37,47 @@ IMG_NAME='Raspbian'
 
 ## Docker Build
 
+### Create Docker image
+
+In order to build an image without modifing your Linux Environment or even on a Windows maschine, a `Dockerfile` is provided.
+
+This will create a Docker image based on Linux, which contains all Dependencis needed to build the image.
+
+To create the Docker image just run ```Docker build -t my-pi-gen-image .``` inside of `pi-gen` directory.
+```
+C:\repo\pi-gen> Docker build -t my-pi-gen-image .
+```
+Don't forget the point at the end. This will specify that the `Dockerfile` is in the current directory.
+
+Running ```Docker images``` will output the created image and additionaly the base image which was pulled from Docker Store.
+```
+C:\repo\pi-gen> Docker images
+REPOSITORY           TAG                 IMAGE ID            CREATED             SIZE
+my-pi-gen-image      latest              e4248c97178b        About an hour ago   386 MB
+debian               jessie              8cedef9d7368        About an hour ago   123 MB
+```
+
+### Build PI Image inside a Docker container
+
+Having the Docker image, we can now create a container.
+```
+C:\repo\pi-gen> Docker run -it --privileged my-pi-gen-image
+```
+We use `-it` in order to have a interactive container and `--privileged` to have full permision inside the container.
+After runnting this command, we are inside the container.
+```
+root@cc7d76f8ace0:/#
+```
+The content of the `pi-gen` directory it's in the root `/pi-gen`. The copy process is happening during the Docker image build process. See `Dockerfile` for this.
+
+Now we can simply start the image build process.
+```
+root@cc7d76f8ace0:/# IMG_NAME='my-first-pi-image' ./pi-gen/build.sh
+```
+This will take a while and the output will be in the `/pi-gen/work/{Date}-my-first-pi-image/` directory.
+
+### Old description
+
 ```bash
 vi config         # Edit your config file. See above.
 ./build-docker.sh
